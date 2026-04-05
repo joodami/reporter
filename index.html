@@ -135,10 +135,15 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyuPk3duuh1dvZ3dBxxEsNR1MD6Q-HKbfM1su0X0cLzS19XuG0UWNHQCEcrkhvh7mDn/exec"; 
     let base64Image = "";
 
-    function resetForm() {
-        document.getElementById('reportForm').reset();
-        document.getElementById('imgPreview').style.display = 'none';
-        base64Image = "";
+    // ฟังก์ชันแปลงวันที่เป็นรูปแบบไทยสำหรับหน้า Preview
+    function formatThaiDate(dateStr) {
+        if (!dateStr) return "";
+        const months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+        const d = new Date(dateStr);
+        const day = d.getDate();
+        const month = months[d.getMonth()];
+        const year = d.getFullYear() + 543;
+        return `${day} ${month} ${year}`;
     }
 
     document.getElementById('imageInput').addEventListener('change', function(e) {
@@ -156,71 +161,74 @@
 
     function showPreview() {
         const name = document.getElementById('name').value;
-        const date = document.getElementById('reportDate').value;
+        const dateRaw = document.getElementById('reportDate').value; // ค่าดิบจาก input (yyyy-mm-dd)
         const order = document.getElementById('reporterOrder').value;
         const detail = document.getElementById('detail').value;
-        if(!name || !date || !order || !detail || !base64Image) {
+
+        if(!name || !dateRaw || !order || !detail || !base64Image) {
             Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลและแนบรูปภาพค่ะ', 'warning'); return;
         }
+
+        // แปลงวันที่เป็นแบบไทยก่อนแสดงใน Modal
+        const thaiDate = formatThaiDate(dateRaw);
+
         document.getElementById('pName').innerText = name;
-        document.getElementById('pDate').innerText = date;
+        document.getElementById('pDate').innerText = thaiDate; // แสดงผลวันที่ไทย
         document.getElementById('pOrder').innerText = order;
         document.getElementById('pDetail').innerText = detail;
         document.getElementById('pImg').src = base64Image;
+        
         new bootstrap.Modal(document.getElementById('previewModal')).show();
     }
 
-async function submitToGAS() {
-    // ปิด Modal Preview
-    bootstrap.Modal.getInstance(document.getElementById('previewModal')).hide();
-    
-    // แสดง Loading
-    Swal.fire({ 
-        title: 'กำลังบันทึกข้อมูล...', 
-        text: 'กรุณารอสักครู่ ระบบกำลังสร้างไฟล์ PDF ค่ะ',
-        allowOutsideClick: false, 
-        didOpen: () => Swal.showLoading() 
-    });
-
-    const payload = {
-        name: document.getElementById('name').value,
-        date: document.getElementById('reportDate').value,
-        reporterOrder: document.getElementById('reporterOrder').value,
-        detail: document.getElementById('detail').value,
-        image: base64Image // ส่งรหัส Base64 ที่ได้จาก FileReader ไปแบบเต็มๆ เลยค่ะ
-    };
-
-    try {
-        const response = await fetch(GAS_URL, { 
-            method: "POST", 
-            body: JSON.stringify(payload) 
-        });
-        const result = await response.json();
+    async function submitToGAS() {
+        bootstrap.Modal.getInstance(document.getElementById('previewModal')).hide();
         
-        if (result.status === 'success') {
-            // ล้างฟอร์ม
-            document.getElementById('reportForm').reset();
-            document.getElementById('imgPreview').style.display = 'none';
-            base64Image = "";
+        Swal.fire({ 
+            title: 'กรุณารอสักครู่...', 
+            text: 'ระบบกำลังสร้างไฟล์รายงานค่ะ',
+            allowOutsideClick: false, 
+            didOpen: () => Swal.showLoading() 
+        });
 
-            Swal.fire({
-                title: 'บันทึกสำเร็จ!',
-                text: 'สร้างรายงาน PDF เรียบร้อยแล้วค่ะ',
-                icon: 'success',
-                confirmButtonText: 'ดาวน์โหลดรายงาน (PDF)',
-                confirmButtonColor: '#1e3a8a'
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    window.open(result.viewUrl, '_blank');
-                }
+        const payload = {
+            name: document.getElementById('name').value,
+            date: document.getElementById('reportDate').value, // ส่งค่า yyyy-mm-dd ไปให้ GAS จัดการต่อ
+            reporterOrder: document.getElementById('reporterOrder').value,
+            detail: document.getElementById('detail').value,
+            image: base64Image
+        };
+
+        try {
+            const response = await fetch(GAS_URL, { 
+                method: "POST", 
+                body: JSON.stringify(payload) 
             });
-        } else { 
-            throw new Error(result.msg); 
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                document.getElementById('reportForm').reset();
+                document.getElementById('imgPreview').style.display = 'none';
+                base64Image = "";
+
+                Swal.fire({
+                    title: 'บันทึกสำเร็จ!',
+                    text: 'สร้างรายงาน PDF เรียบร้อยแล้วค่ะ',
+                    icon: 'success',
+                    confirmButtonText: 'ดาวน์โหลดรายงาน',
+                    confirmButtonColor: '#1e3a8a'
+                }).then((res) => {
+                    if (res.isConfirmed) {
+                        window.open(result.viewUrl, '_blank');
+                    }
+                });
+            } else { 
+                throw new Error(result.msg); 
+            }
+        } catch (error) { 
+            Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถบันทึกได้: ' + error.message, 'error'); 
         }
-    } catch (error) { 
-        Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถบันทึกได้: ' + error.message, 'error'); 
     }
-}
 </script>
 </body>
 </html>
