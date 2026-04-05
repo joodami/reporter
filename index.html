@@ -29,6 +29,14 @@
             border-bottom-right-radius: 50px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             margin-bottom: -50px;
+            overflow: hidden; /* ป้องกันเนื้อหาล้น */
+        }
+
+        .header-banner h2 {
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            word-wrap: break-word; /* บังคับตัดคำถ้าข้อความยาวเกินไป */
         }
 
         .school-logo {
@@ -66,33 +74,44 @@
         .modal-content { border-radius: 20px; border: none; }
         .preview-label { font-weight: bold; color: #666; font-size: 0.9rem; }
         .preview-value { font-size: 1.1rem; margin-bottom: 15px; white-space: pre-wrap; }
-        /* --- ส่วนที่ปรับปรุงเพื่อมือถือ --- */
+
+        /* --- ส่วนที่ปรับปรุงเพื่อมือถือ (Mobile Responsive) --- */
         @media (max-width: 768px) {
             .header-banner {
-                padding: 25px 15px; /* ลดระยะขอบบน-ล่าง */
+                padding: 30px 15px;
                 border-bottom-left-radius: 30px;
                 border-bottom-right-radius: 30px;
             }
             .header-banner h2 {
-                font-size: 1.4rem; /* ลดขนาดหัวข้อใหญ่ */
+                font-size: 1.2rem; /* ปรับขนาดฟอนต์ให้เล็กลงพอดีหน้าจอ */
+                padding: 0 10px;
             }
             .header-banner p {
-                font-size: 1rem; /* ลดขนาดคำอธิบาย */
+                font-size: 0.95rem;
             }
             .main-card {
-                padding: 20px; /* ลดพื้นที่ว่างในบัตรกรอกข้อมูล */
-                margin-top: -30px; /* ให้บัตรเขยิบขึ้นไปทับแบนเนอร์น้อยลง */
+                padding: 20px;
+                margin-top: -25px; /* ปรับตำแหน่งการซ้อนทับ */
             }
             .modal-footer {
-                flex-direction: column; /* ให้ปุ่มเรียงต่อกันในแนวตั้ง */
+                flex-direction: column;
                 gap: 10px;
+                padding: 20px !important;
             }
             .modal-footer button {
-                width: 100% !important; /* ให้ปุ่มกว้างเต็มหน้าจอ */
+                width: 100% !important;
                 margin: 0 !important;
+                padding: 12px !important;
             }
             .preview-value {
-                font-size: 1rem; /* ลดขนาดตัวอักษรตอน Preview */
+                font-size: 1rem;
+            }
+        }
+
+        /* สำหรับมือถือหน้าจอเล็กมาก */
+        @media (max-width: 375px) {
+            .header-banner h2 {
+                font-size: 1.1rem;
             }
         }
     </style>
