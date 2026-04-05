@@ -31,28 +31,29 @@
         .btn-preview:hover { background-color: #e5a920; transform: translateY(-2px); }
         #imgPreview { width: 100%; max-height: 250px; object-fit: contain; display: none; margin-top: 15px; border-radius: 10px; border: 2px dashed #ddd; }
 
-        /* --- แก้ไขเพื่อมือถือให้เห็นชื่อโรงเรียนชัดเจน --- */
+        /* --- ส่วนที่แก้ไขเพื่อมือถือให้เห็นชื่อโรงเรียนชัดเจน --- */
         @media (max-width: 768px) {
             .header-banner { 
-                padding: 30px 15px 90px 15px !important; /* เพิ่มพื้นที่ด้านล่างมากขึ้น */
+                padding: 40px 15px 100px 15px !important; /* เพิ่มระยะล่างเพื่อให้แบนเนอร์ยาวขึ้น */
                 border-bottom-left-radius: 30px; 
                 border-bottom-right-radius: 30px; 
             }
             .header-banner h2 { 
-                font-size: 1.2rem; 
-                margin-bottom: 8px !important;
+                font-size: 1.25rem; 
+                margin-bottom: 10px !important;
+                line-height: 1.4;
             } 
             .header-banner .lead { 
-                font-size: 1.05rem !important; 
+                font-size: 1.1rem !important; 
                 opacity: 1 !important; 
                 font-weight: 400;
-                margin-bottom: 0;
-                display: block !important; /* บังคับให้แสดงผล */
+                margin-bottom: 0 !important;
+                display: block !important; /* ยืนยันให้ชื่อโรงเรียนแสดงผล */
             }
-            .school-logo { width: 70px; }
+            .school-logo { width: 75px; }
             .main-card { 
                 padding: 20px; 
-                margin-top: -65px !important; /* ปรับจุดเริ่มต้นของการ์ดให้ต่ำลง ไม่ให้ทับชื่อ */
+                margin-top: -60px !important; /* ปรับการซ้อนทับไม่ให้กินพื้นที่ชื่อโรงเรียน */
                 position: relative;
                 z-index: 10;
             }
