@@ -31,11 +31,11 @@
     .btn-preview:hover { background-color: #e5a920; transform: translateY(-2px); }
     #imgPreview { width: 100%; max-height: 250px; object-fit: contain; display: none; margin-top: 15px; border-radius: 10px; border: 2px dashed #ddd; }
 
-    /* --- ส่วนที่ปรับปรุงเพื่อมุมมองมือถือโดยเฉพาะ --- */
+    /* --- ปรับแต่งตัวเลขสำหรับมือถือ (ฉบับขยับการ์ดลง) --- */
     @media (max-width: 768px) {
         .header-banner { 
-            /* ปรับระยะล่าง (เลขตัวที่สาม) เป็น 130px เพื่อขยายพื้นที่สีน้ำเงิน */
-            padding: 35px 15px 130px 15px !important; 
+            /* เพิ่มระยะล่างของสีน้ำเงินเป็น 150px เพื่อให้มีที่ว่างสำหรับตัวหนังสือ */
+            padding: 35px 15px 150px 15px !important; 
             border-bottom-left-radius: 30px; 
             border-bottom-right-radius: 30px; 
         }
@@ -45,17 +45,17 @@
             line-height: 1.4;
         } 
         .header-banner .lead { 
-            font-size: 1.1rem !important; 
-            font-weight: 400;
-            margin-top: 5px !important;
-            margin-bottom: 0 !important;
-            display: block !important; /* บังคับให้ชื่อโรงเรียนแสดงเสมอ */
+            font-size: 1.15rem !important; /* ปรับขนาดชื่อโรงเรียนให้เด่นขึ้น */
+            font-weight: 700; /* ทำให้ชื่อโรงเรียนตัวหนาขึ้น */
+            margin-top: 10px !important;
+            margin-bottom: 10px !important;
+            display: block !important;
         }
-        .school-logo { width: 70px; }
+        .school-logo { width: 75px; }
         .main-card { 
             padding: 20px; 
-            /* ปรับค่าลบให้น้อยลงเป็น -90px เพื่อให้การ์ดขยับลงมา ไม่ไปทับตัวหนังสือด้านบน */
-            margin-top: -90px !important; 
+            /* ปรับค่าลบให้น้อยลงเหลือ -50px เพื่อให้การ์ดขยับลงข้างล่างมากขึ้น ไม่ไปบังชื่อโรงเรียน */
+            margin-top: -50px !important; 
             position: relative;
             z-index: 10;
         }
