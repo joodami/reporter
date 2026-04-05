@@ -85,6 +85,16 @@
                         <label class="form-label">ชื่อผู้รายงาน</label>
                         <input type="text" id="name" class="form-control" placeholder="ระบุชื่อ-นามสกุล" required>
                     </div>
+                    <div class="mb-3">
+    <label class="form-label">รองผู้อำนวยการที่กำกับดูแล</label>
+    <select id="boss" class="form-control" required>
+        <option value="" disabled selected>--- เลือกรายชื่อ ---</option>
+        <option value="นายสุภาพ เจริญผล">นายสุภาพ เจริญผล</option>
+        <option value="นางวนิดา แดงคง">นางวนิดา แดงคง</option>
+        <option value="นายคุณานนต์ ทองกรด">นายคุณานนต์ ทองกรด</option>
+        <option value="นายภูริพัฒน์ ยานา">นายภูริพัฒน์ ยานา</option>
+    </select>
+</div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">วันเดือนปี</label>
@@ -161,25 +171,31 @@
         }
     });
 
-    function showPreview() {
+   function showPreview() {
         const name = document.getElementById('name').value;
-        const dateRaw = document.getElementById('reportDate').value; // ค่าดิบจาก input (yyyy-mm-dd)
+        const boss = document.getElementById('boss').value; // ดึงค่ารายชื่อรองผู้อำนวยการ
+        const dateRaw = document.getElementById('reportDate').value;
         const order = document.getElementById('reporterOrder').value;
         const detail = document.getElementById('detail').value;
 
-        if(!name || !dateRaw || !order || !detail || !base64Image) {
-            Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลและแนบรูปภาพค่ะ', 'warning'); return;
+        // เพิ่มการตรวจสอบค่า boss ในเงื่อนไข if
+        if(!name || !boss || !dateRaw || !order || !detail || !base64Image) {
+            Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลและแนบรูปภาพให้ครบถ้วนค่ะ', 'warning'); 
+            return;
         }
 
-        // แปลงวันที่เป็นแบบไทยก่อนแสดงใน Modal
+        // แปลงวันที่เป็นแบบไทย
         const thaiDate = formatThaiDate(dateRaw);
 
+        // ส่งค่าไปแสดงผลที่ Modal Preview
         document.getElementById('pName').innerText = name;
-        document.getElementById('pDate').innerText = thaiDate; // แสดงผลวันที่ไทย
+        document.getElementById('pBoss').innerText = boss; // แสดงรายชื่อรองฯ ในจุดที่กำหนด
+        document.getElementById('pDate').innerText = thaiDate;
         document.getElementById('pOrder').innerText = order;
         document.getElementById('pDetail').innerText = detail;
         document.getElementById('pImg').src = base64Image;
         
+        // เปิดหน้าต่าง Modal
         new bootstrap.Modal(document.getElementById('previewModal')).show();
     }
 
@@ -195,7 +211,8 @@
 
         const payload = {
             name: document.getElementById('name').value,
-            date: document.getElementById('reportDate').value, // ส่งค่า yyyy-mm-dd ไปให้ GAS จัดการต่อ
+            boss: document.getElementById('boss').value, // เพิ่มการส่งรายชื่อรองผู้อำนวยการ
+            date: document.getElementById('reportDate').value,
             reporterOrder: document.getElementById('reporterOrder').value,
             detail: document.getElementById('detail').value,
             image: base64Image
@@ -215,7 +232,8 @@
 
                 Swal.fire({
                     title: 'สร้างรายงานสำเร็จ!',
-                    text: 'ดาวน์โหลดเพื่อเสนอ ผอ.ผ่านไลน์ OA',
+                    // ใช้ style เพื่อป้องกันคำว่า "OA" ตัดบรรทัดใหม่ตามที่เคยปรับไว้ค่ะ
+                    html: '<span style="white-space: nowrap; display: inline-block;">ดาวน์โหลดรายงานเพื่อเสนอ ผอ. ผ่านไลน์ OA</span>',
                     icon: 'success',
                     confirmButtonText: 'ดาวน์โหลดรายงาน',
                     confirmButtonColor: '#1e3a8a'
