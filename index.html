@@ -194,10 +194,10 @@ async function submitToGAS() {
             resetForm();
             // ปรับเหลือเพียงปุ่มเดียวคือ "ดูรายงาน"
             Swal.fire({
-                title: 'บันทึกสำเร็จ!',
-                text: 'ระบบได้บันทึกรายงานของคุณเรียบร้อยแล้วค่ะ',
+                title: 'สร้างรายงานสำเร็จ!',
+                text: 'ดาวน์โหลดรายงานเพื่อเสนอผู้อำนวยการผ่านไลน์ OA',
                 icon: 'success',
-                confirmButtonText: '👁 ดูรายงาน (PDF)',
+                confirmButtonText: 'ดาวน์โหลดรายงาน (PDF)',
                 confirmButtonColor: '#1e3a8a'
             }).then((res) => {
                 if (res.isConfirmed) {
