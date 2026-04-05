@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบรายงานการปฏิบัติงาน - โรงเรียนพิมานพิทยาสรรค์</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap');
+        
+        :root {
+            --primary-color: #1e3a8a; /* น้ำเงินเข้ม */
+            --secondary-color: #fdbb2d; /* ทอง/เหลือง */
+        }
+
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            background-color: #f4f7f6; 
+            margin: 0;
+        }
+
+        /* Banner Design */
+        .header-banner {
+            background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+            color: white;
+            padding: 40px 20px;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: -50px;
+        }
+
+        .school-logo {
+            width: 90px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+
+        /* Card Design */
+        .main-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: white;
+            padding: 30px;
+        }
+
+        .form-label { font-weight: 700; color: var(--primary-color); }
+        .form-control { border-radius: 12px; padding: 12px; border: 1px solid #dee2e6; }
+        .form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 0.25rem rgba(30, 58, 138, 0.1); }
+
+        .btn-preview { background-color: var(--secondary-color); color: #333; border: none; font-weight: 700; }
+        .btn-preview:hover { background-color: #e5a920; }
+        
+        #imgPreview { 
+            width: 100%; 
+            max-height: 300px; 
+            object-fit: contain; 
+            display: none; 
+            margin-top: 15px; 
+            border-radius: 10px;
+            border: 2px dashed #ddd;
+        }
+
+        /* Modal Custom */
+        .modal-content { border-radius: 20px; border: none; }
+        .preview-label { font-weight: bold; color: #666; font-size: 0.9rem; }
+        .preview-value { font-size: 1.1rem; margin-bottom: 15px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+<div class="header-banner text-center">
+    <img src="https://via.placeholder.com/100?text=LOGO" class="school-logo mb-3" alt="School Logo"> 
+    <h2 class="fw-bold">ระบบรายงานการปฏิบัติงาน งานยานพาหนะ</h2>
+    <p class="lead">โรงเรียนพิมานพิทยาสรรค์</p>
+</div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="main-card">
+                <form id="reportForm">
+                    <div class="mb-4 text-center">
+                        <span class="badge bg-primary px-3 py-2">กรอกข้อมูลรายงาน</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">ชื่อผู้รายงาน</label>
+                        <input type="text" id="name" class="form-control" placeholder="ระบุชื่อ-นามสกุล" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">วันเดือนปี</label>
+                            <input type="date" id="reportDate" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">ผู้รายงานคนที่ (ตามคำสั่ง)</label>
+                            <input type="number" id="reporterOrder" class="form-control" placeholder="ลำดับที่..." required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">รายงานการปฏิบัติหน้าที่</label>
+                        <textarea id="detail" class="form-control" rows="6" placeholder="รายละเอียดการทำงาน..." required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">แนบรูปภาพการปฏิบัติงาน</label>
+                        <input type="file" id="imageInput" class="form-control" accept="image/*" required>
+                        <img id="imgPreview" alt="ตัวอย่างรูปภาพ">
+                    </div>
+
+                    <button type="button" class="btn btn-preview w-100 py-3 shadow-sm" onclick="showPreview()">
+                        🔍 ตรวจสอบข้อมูล (Preview)
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-primary">ตรวจสอบความถูกต้อง</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="preview-label">ชื่อผู้รายงาน:</p>
+                        <p id="pName" class="preview-value"></p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="preview-label">วันที่:</p>
+                        <p id="pDate" class="preview-value"></p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="preview-label">ลำดับที่:</p>
+                        <p id="pOrder" class="preview-value"></p>
+                    </div>
+                </div>
+                <p class="preview-label">รายละเอียด:</p>
+                <p id="pDetail" class="preview-value"></p>
+                <p class="preview-label">รูปภาพแนบ:</p>
+                <img id="pImg" class="img-fluid rounded mb-3" style="max-height: 200px;">
+            </div>
+            <div class="modal-footer border-0 p-4">
+                <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">แก้ไขข้อมูล</button>
+                <button type="button" class="btn btn-primary px-5" onclick="submitToGAS()">✅ ยืนยันและบันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyuPk3duuh1dvZ3dBxxEsNR1MD6Q-HKbfM1su0X0cLzS19XuG0UWNHQCEcrkhvh7mDn/exec"; 
+    let base64Image = "";
+
+    // จัดการการแสดงตัวอย่างรูปภาพ
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                base64Image = event.target.result;
+                const img = document.getElementById('imgPreview');
+                img.src = base64Image;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // ฟังก์ชันโชว์ Preview
+    function showPreview() {
+        const name = document.getElementById('name').value;
+        const date = document.getElementById('reportDate').value;
+        const order = document.getElementById('reporterOrder').value;
+        const detail = document.getElementById('detail').value;
+
+        if(!name || !date || !order || !detail || !base64Image) {
+            Swal.fire('กรุณากรอกข้อมูลให้ครบ', 'ตรวจสอบชื่อ วันที่ ลำดับ รายละเอียด และรูปภาพค่ะ', 'warning');
+            return;
+        }
+
+        document.getElementById('pName').innerText = name;
+        document.getElementById('pDate').innerText = date;
+        document.getElementById('pOrder').innerText = order;
+        document.getElementById('pDetail').innerText = detail;
+        document.getElementById('pImg').src = base64Image;
+
+        const myModal = new bootstrap.Modal(document.getElementById('previewModal'));
+        myModal.show();
+    }
+
+    // ส่งข้อมูลไป Google Apps Script
+    async function submitToGAS() {
+        // ปิด Modal Preview
+        bootstrap.Modal.getInstance(document.getElementById('previewModal')).hide();
+
+        // แสดง Loading
+        Swal.fire({
+            title: 'กำลังบันทึกข้อมูล...',
+            html: 'ระบบกำลังสร้างรายงาน PDF และบันทึกลงฐานข้อมูล <br> กรุณารอสักครู่ค่ะ',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        const payload = {
+            name: document.getElementById('name').value,
+            date: document.getElementById('reportDate').value,
+            reporterOrder: document.getElementById('reporterOrder').value,
+            detail: document.getElementById('detail').value,
+            image: base64Image
+        };
+
+        try {
+            const response = await fetch(GAS_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                Swal.fire({
+                    title: 'สำเร็จ!',
+                    text: 'บันทึกข้อมูลและสร้างรายงานเรียบร้อยแล้วค่ะ',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonText: '👁 ดูรายงาน',
+                    cancelButtonText: '📥 ดาวน์โหลด PDF',
+                    confirmButtonColor: '#0dcaf0',
+                    cancelButtonColor: '#198754'
+                }).then((res) => {
+                    if (res.isConfirmed) {
+                        window.open(result.viewUrl, '_blank');
+                    } else if (res.dismiss === Swal.DismissReason.cancel) {
+                        window.location.href = result.pdfUrl;
+                    }
+                });
+            } else {
+                throw new Error(result.msg);
+            }
+        } catch (error) {
+            Swal.fire('เกิดข้อผิดพลาด', error.message, 'error');
+        }
+    }
+</script>
+</body>
+</html>
