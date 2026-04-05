@@ -171,10 +171,13 @@
     }
 
 async function submitToGAS() {
+    // ปิด Modal Preview
     bootstrap.Modal.getInstance(document.getElementById('previewModal')).hide();
+    
+    // แสดง Loading
     Swal.fire({ 
         title: 'กำลังบันทึกข้อมูล...', 
-        text: 'กรุณารอสักครู่ค่ะ', 
+        text: 'กรุณารอสักครู่ ระบบกำลังสร้างไฟล์ PDF ค่ะ',
         allowOutsideClick: false, 
         didOpen: () => Swal.showLoading() 
     });
@@ -184,18 +187,25 @@ async function submitToGAS() {
         date: document.getElementById('reportDate').value,
         reporterOrder: document.getElementById('reporterOrder').value,
         detail: document.getElementById('detail').value,
-        image: base64Image
+        image: base64Image // ส่งรหัส Base64 ที่ได้จาก FileReader ไปแบบเต็มๆ เลยค่ะ
     };
 
     try {
-        const response = await fetch(GAS_URL, { method: "POST", body: JSON.stringify(payload) });
+        const response = await fetch(GAS_URL, { 
+            method: "POST", 
+            body: JSON.stringify(payload) 
+        });
         const result = await response.json();
+        
         if (result.status === 'success') {
-            resetForm();
-            // ปรับเหลือเพียงปุ่มเดียวคือ "ดูรายงาน"
+            // ล้างฟอร์ม
+            document.getElementById('reportForm').reset();
+            document.getElementById('imgPreview').style.display = 'none';
+            base64Image = "";
+
             Swal.fire({
-                title: 'สร้างรายงานสำเร็จ!',
-                text: 'ดาวน์โหลดรายงานเพื่อเสนอผู้อำนวยการผ่านไลน์ OA',
+                title: 'บันทึกสำเร็จ!',
+                text: 'สร้างรายงาน PDF เรียบร้อยแล้วค่ะ',
                 icon: 'success',
                 confirmButtonText: 'ดาวน์โหลดรายงาน (PDF)',
                 confirmButtonColor: '#1e3a8a'
