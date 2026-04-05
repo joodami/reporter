@@ -233,10 +233,13 @@
                 document.getElementById('imgPreview').style.display = 'none';
                 base64Image = "";
 
-                Swal.fire({
+               Swal.fire({
                     title: 'สร้างรายงานสำเร็จ!',
-                    // ใช้ style เพื่อป้องกันคำว่า "OA" ตัดบรรทัดใหม่ตามที่เคยปรับไว้ค่ะ
-                    html: '<span style="white-space: nowrap; display: inline-block;">ดาวน์โหลดรายงานเพื่อเสนอ ผอ. ผ่านไลน์ OA</span>',
+                    // ปรับส่วน html ด้านล่างนี้ค่ะ
+                    html: '<div style="font-size: 1.1rem; line-height: 1.5;">' +
+                          'ดาวน์โหลดรายงาน<br>' + 
+                          '<span style="font-size: 0.95rem; color: #555;">เพื่อเสนอ ผอ. ผ่านไลน์ OA</span>' +
+                          '</div>',
                     icon: 'success',
                     confirmButtonText: 'ดาวน์โหลดรายงาน',
                     confirmButtonColor: '#1e3a8a'
