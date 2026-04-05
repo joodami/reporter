@@ -66,6 +66,35 @@
         .modal-content { border-radius: 20px; border: none; }
         .preview-label { font-weight: bold; color: #666; font-size: 0.9rem; }
         .preview-value { font-size: 1.1rem; margin-bottom: 15px; white-space: pre-wrap; }
+        /* --- ส่วนที่ปรับปรุงเพื่อมือถือ --- */
+        @media (max-width: 768px) {
+            .header-banner {
+                padding: 25px 15px; /* ลดระยะขอบบน-ล่าง */
+                border-bottom-left-radius: 30px;
+                border-bottom-right-radius: 30px;
+            }
+            .header-banner h2 {
+                font-size: 1.4rem; /* ลดขนาดหัวข้อใหญ่ */
+            }
+            .header-banner p {
+                font-size: 1rem; /* ลดขนาดคำอธิบาย */
+            }
+            .main-card {
+                padding: 20px; /* ลดพื้นที่ว่างในบัตรกรอกข้อมูล */
+                margin-top: -30px; /* ให้บัตรเขยิบขึ้นไปทับแบนเนอร์น้อยลง */
+            }
+            .modal-footer {
+                flex-direction: column; /* ให้ปุ่มเรียงต่อกันในแนวตั้ง */
+                gap: 10px;
+            }
+            .modal-footer button {
+                width: 100% !important; /* ให้ปุ่มกว้างเต็มหน้าจอ */
+                margin: 0 !important;
+            }
+            .preview-value {
+                font-size: 1rem; /* ลดขนาดตัวอักษรตอน Preview */
+            }
+        }
     </style>
 </head>
 <body>
